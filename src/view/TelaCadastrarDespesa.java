@@ -7,6 +7,7 @@ package view;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 import model.bean.Produto;
 import model.dao.ProdutoDAO;
 
@@ -14,13 +15,33 @@ import model.dao.ProdutoDAO;
  *
  * @author heyto
  */
-public class TelaCadastrarDespesa extends javax.swing.JFrame {
+public final class TelaCadastrarDespesa extends javax.swing.JFrame {
 
     /**
      * Creates new form TelaCadastrarDespesa
      */
     public TelaCadastrarDespesa() {
         initComponents();
+        try {
+            readJtable();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(TelaCadastrarDespesa.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void readJtable() throws SQLException, ClassNotFoundException {
+        DefaultTableModel modelo = (DefaultTableModel) TabelaExibir.getModel();
+        modelo.setNumRows(0);
+        ProdutoDAO pdao = new ProdutoDAO();
+
+        pdao.read().stream().forEach((p) -> {
+            modelo.addRow(new Object[]{
+                p.getId(),
+                p.getDescricao(),
+                p.getQuantd(),
+                p.getPreco()
+            });
+        });
     }
 
     /**
@@ -32,9 +53,9 @@ public class TelaCadastrarDespesa extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        BotaoExcluir = new javax.swing.JButton();
+        BotaoCadastrar = new javax.swing.JButton();
+        BotaoAtualizar = new javax.swing.JButton();
         InputDescricao = new javax.swing.JTextField();
         InputPreco = new javax.swing.JTextField();
         InputQuantidade = new javax.swing.JTextField();
@@ -42,20 +63,30 @@ public class TelaCadastrarDespesa extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        TabelaExibir = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("Excluir");
-
-        jButton2.setText("Cadastrar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        BotaoExcluir.setText("Excluir");
+        BotaoExcluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                BotaoExcluirActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Atualizar");
+        BotaoCadastrar.setText("Cadastrar");
+        BotaoCadastrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotaoCadastrarActionPerformed(evt);
+            }
+        });
+
+        BotaoAtualizar.setText("Atualizar");
+        BotaoAtualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotaoAtualizarActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Descrição");
 
@@ -63,26 +94,31 @@ public class TelaCadastrarDespesa extends javax.swing.JFrame {
 
         jLabel3.setText("Quantidade");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        TabelaExibir.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Descrição", "Quantidade", "Preço"
+                "ID", "Descrição", "Quantidade", "Preço"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Double.class
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
             };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        TabelaExibir.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                TabelaExibirKeyReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(TabelaExibir);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -92,11 +128,11 @@ public class TelaCadastrarDespesa extends javax.swing.JFrame {
                 .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(BotaoCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(BotaoExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(28, 28, 28)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(BotaoAtualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(InputDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -110,7 +146,10 @@ public class TelaCadastrarDespesa extends javax.swing.JFrame {
                             .addComponent(jLabel2)
                             .addComponent(InputPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(73, Short.MAX_VALUE))
-            .addComponent(jScrollPane1)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -127,9 +166,9 @@ public class TelaCadastrarDespesa extends javax.swing.JFrame {
                     .addComponent(InputPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(BotaoExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BotaoAtualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BotaoCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(101, Short.MAX_VALUE))
@@ -139,20 +178,82 @@ public class TelaCadastrarDespesa extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
+    private void BotaoCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotaoCadastrarActionPerformed
+
         Produto p = new Produto();
         ProdutoDAO dao = new ProdutoDAO();
-        
+
         p.setDescricao(InputDescricao.getText());
         p.setQuantd(Integer.parseInt(InputQuantidade.getText()));
         p.setPreco(Double.parseDouble(InputPreco.getText()));
+
+        InputDescricao.setText("");
+        InputQuantidade.setText("");
+        InputPreco.setText("");
+
         try {
             dao.Create(p);
+            readJtable();
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(TelaCadastrarDespesa.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_BotaoCadastrarActionPerformed
+
+    private void TabelaExibirKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TabelaExibirKeyReleased
+
+        if (TabelaExibir.getSelectedRow() != -1) {
+             InputDescricao.setText(TabelaExibir.getValueAt(TabelaExibir.getSelectedRow(), 1).toString());
+            InputQuantidade.setText(TabelaExibir.getValueAt(TabelaExibir.getSelectedRow(), 2).toString());
+            InputPreco.setText(TabelaExibir.getValueAt(TabelaExibir.getSelectedRow(), 3).toString());
+        }
+
+    }//GEN-LAST:event_TabelaExibirKeyReleased
+
+    private void BotaoAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotaoAtualizarActionPerformed
+
+        if (TabelaExibir.getSelectedRow() != -1) {
+            Produto p = new Produto();
+            ProdutoDAO dao = new ProdutoDAO();
+
+            p.setDescricao(InputDescricao.getText());
+            p.setQuantd(Integer.parseInt(InputQuantidade.getText()));
+            p.setPreco(Double.parseDouble(InputPreco.getText()));
+            p.setId((int) TabelaExibir.getValueAt(TabelaExibir.getSelectedRow(), 0));
+
+            InputDescricao.setText("");
+            InputQuantidade.setText("");
+            InputPreco.setText("");
+
+            try {
+                dao.update(p);
+                readJtable();
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(TelaCadastrarDespesa.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }//GEN-LAST:event_BotaoAtualizarActionPerformed
+
+    private void BotaoExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotaoExcluirActionPerformed
+        
+        if (TabelaExibir.getSelectedRow() != -1) {
+            Produto p = new Produto();
+            ProdutoDAO dao = new ProdutoDAO();
+
+            p.setId((int) TabelaExibir.getValueAt(TabelaExibir.getSelectedRow(), 0));
+
+            InputDescricao.setText("");
+            InputQuantidade.setText("");
+            InputPreco.setText("");
+
+            try {
+                dao.delete(p);
+                readJtable();
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(TelaCadastrarDespesa.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_BotaoExcluirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -190,16 +291,16 @@ public class TelaCadastrarDespesa extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BotaoAtualizar;
+    private javax.swing.JButton BotaoCadastrar;
+    private javax.swing.JButton BotaoExcluir;
     private javax.swing.JTextField InputDescricao;
     private javax.swing.JTextField InputPreco;
     private javax.swing.JTextField InputQuantidade;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JTable TabelaExibir;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }

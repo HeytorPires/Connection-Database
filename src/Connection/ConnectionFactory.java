@@ -3,6 +3,8 @@ package Connection;
 import java.sql.Connection; // Importe java.sql.Connection em vez de com.sun.jdi.connect.spi.Connection
 import java.io.IOException;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -14,7 +16,7 @@ public class ConnectionFactory {
     private static final String USER = "root";
     private static final String PASS = "1234";
     
-    public static Connection GetConnection() throws ClassNotFoundException, SQLException {
+    public static Connection getConnection() throws ClassNotFoundException, SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             return DriverManager.getConnection(URL, USER, PASS);
@@ -31,7 +33,7 @@ public class ConnectionFactory {
         } catch (SQLException ex) {
             Logger.getLogger(ConnectionFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
-    } 
+    }
     
     public static void CloseConnection(Connection con, PreparedStatement stmt) {
         CloseConnection(con);
@@ -43,4 +45,14 @@ public class ConnectionFactory {
             Logger.getLogger(ConnectionFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public static void CloseConnection(Connection con, PreparedStatement stmt, ResultSet rs){
+          CloseConnection(con, stmt);
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConnectionFactory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+     }
 }
