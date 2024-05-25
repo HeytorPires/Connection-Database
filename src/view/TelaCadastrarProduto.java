@@ -20,15 +20,15 @@ public final class TelaCadastrarProduto extends javax.swing.JFrame {
     /**
      * Creates new form TelaCadastrarDespesa
      */
-    public TelaCadastrarProduto() {
+    public TelaCadastrarProduto()  {
         initComponents();
-        readJtableForDesc();
-                 
+        
         try {
             readJtable();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(TelaCadastrarProduto.class.getName()).log(Level.SEVERE, null, ex);
         }
+       
 
     }
 
@@ -47,20 +47,21 @@ public final class TelaCadastrarProduto extends javax.swing.JFrame {
         });
     }
     
-    public void readJtableForDesc(String desc) throws SQLException, ClassNotFoundException {
-        DefaultTableModel modelo = (DefaultTableModel) TabelaExibir.getModel();
-        modelo.setNumRows(0);
-        ProdutoDAO pdao = new ProdutoDAO();
+  
+public void readJtableForDesc(String desc) throws SQLException, ClassNotFoundException  {
+    DefaultTableModel modelo = (DefaultTableModel) TabelaExibir.getModel();
+    modelo.setNumRows(0);
+    ProdutoDAO pdao = new ProdutoDAO();
 
-        pdao.readforDesc(desc).stream().forEach((p) -> {
-            modelo.addRow(new Object[]{
-                p.getId(),
-                p.getDescricao(),
-                p.getQuantd(),
-                p.getPreco()
-            });
+    pdao.readforDesc(desc).stream().forEach((p) -> {
+        modelo.addRow(new Object[]{
+            p.getId(),
+            p.getDescricao(),
+            p.getQuantd(),
+            p.getPreco()
         });
-    }
+    });
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -143,6 +144,12 @@ public final class TelaCadastrarProduto extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(TabelaExibir);
+
+        InputPesquisa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                InputPesquisaActionPerformed(evt);
+            }
+        });
 
         buttonPesquisa.setText("Buscar");
         buttonPesquisa.addActionListener(new java.awt.event.ActionListener() {
@@ -303,9 +310,16 @@ public final class TelaCadastrarProduto extends javax.swing.JFrame {
     }//GEN-LAST:event_BotaoExcluirActionPerformed
 
     private void buttonPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPesquisaActionPerformed
-        
-        readJtableForDesc(InputPesquisa.getText());
+        try {
+            readJtableForDesc(InputPesquisa.getText());
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(TelaCadastrarProduto.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_buttonPesquisaActionPerformed
+
+    private void InputPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InputPesquisaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_InputPesquisaActionPerformed
 
     /**
      * @param args the command line arguments
