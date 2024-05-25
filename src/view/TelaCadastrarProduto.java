@@ -15,18 +15,21 @@ import model.dao.ProdutoDAO;
  *
  * @author heyto
  */
-public final class TelaCadastrarDespesa extends javax.swing.JFrame {
+public final class TelaCadastrarProduto extends javax.swing.JFrame {
 
     /**
      * Creates new form TelaCadastrarDespesa
      */
-    public TelaCadastrarDespesa() {
+    public TelaCadastrarProduto() {
         initComponents();
+        readJtableForDesc();
+                 
         try {
             readJtable();
         } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(TelaCadastrarDespesa.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TelaCadastrarProduto.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     public void readJtable() throws SQLException, ClassNotFoundException {
@@ -35,6 +38,21 @@ public final class TelaCadastrarDespesa extends javax.swing.JFrame {
         ProdutoDAO pdao = new ProdutoDAO();
 
         pdao.read().stream().forEach((p) -> {
+            modelo.addRow(new Object[]{
+                p.getId(),
+                p.getDescricao(),
+                p.getQuantd(),
+                p.getPreco()
+            });
+        });
+    }
+    
+    public void readJtableForDesc(String desc) throws SQLException, ClassNotFoundException {
+        DefaultTableModel modelo = (DefaultTableModel) TabelaExibir.getModel();
+        modelo.setNumRows(0);
+        ProdutoDAO pdao = new ProdutoDAO();
+
+        pdao.readforDesc(desc).stream().forEach((p) -> {
             modelo.addRow(new Object[]{
                 p.getId(),
                 p.getDescricao(),
@@ -53,6 +71,7 @@ public final class TelaCadastrarDespesa extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jButton1 = new javax.swing.JButton();
         BotaoExcluir = new javax.swing.JButton();
         BotaoCadastrar = new javax.swing.JButton();
         BotaoAtualizar = new javax.swing.JButton();
@@ -64,6 +83,11 @@ public final class TelaCadastrarDespesa extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         TabelaExibir = new javax.swing.JTable();
+        InputPesquisa = new javax.swing.JTextField();
+        buttonPesquisa = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+
+        jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -120,37 +144,56 @@ public final class TelaCadastrarDespesa extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(TabelaExibir);
 
+        buttonPesquisa.setText("Buscar");
+        buttonPesquisa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonPesquisaActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Pesquisa");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(BotaoCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(BotaoExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addComponent(BotaoAtualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(InputDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addGap(49, 49, 49)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(InputQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addGap(53, 53, 53)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(InputPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(73, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(BotaoCadastrar)
+                                .addGap(18, 18, 18)
+                                .addComponent(BotaoExcluir)
+                                .addGap(30, 30, 30)
+                                .addComponent(BotaoAtualizar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(InputDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(InputQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel3))))
+                        .addGap(32, 32, 32)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(InputPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel4)
+                        .addComponent(InputPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addComponent(buttonPesquisa)
+                .addGap(23, 23, 23))
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {BotaoCadastrar, BotaoExcluir});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -164,14 +207,18 @@ public final class TelaCadastrarDespesa extends javax.swing.JFrame {
                     .addComponent(InputDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(InputQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(InputPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(44, 44, 44)
+                .addGap(22, 22, 22)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(BotaoExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BotaoAtualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BotaoCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(BotaoExcluir)
+                    .addComponent(BotaoAtualizar)
+                    .addComponent(BotaoCadastrar)
+                    .addComponent(InputPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buttonPesquisa))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(101, Short.MAX_VALUE))
+                .addContainerGap(116, Short.MAX_VALUE))
         );
 
         pack();
@@ -195,7 +242,7 @@ public final class TelaCadastrarDespesa extends javax.swing.JFrame {
             dao.Create(p);
             readJtable();
         } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(TelaCadastrarDespesa.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TelaCadastrarProduto.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_BotaoCadastrarActionPerformed
 
@@ -228,7 +275,7 @@ public final class TelaCadastrarDespesa extends javax.swing.JFrame {
                 dao.update(p);
                 readJtable();
             } catch (ClassNotFoundException | SQLException ex) {
-                Logger.getLogger(TelaCadastrarDespesa.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TelaCadastrarProduto.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -250,10 +297,15 @@ public final class TelaCadastrarDespesa extends javax.swing.JFrame {
                 dao.delete(p);
                 readJtable();
             } catch (ClassNotFoundException | SQLException ex) {
-                Logger.getLogger(TelaCadastrarDespesa.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TelaCadastrarProduto.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_BotaoExcluirActionPerformed
+
+    private void buttonPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPesquisaActionPerformed
+        
+        readJtableForDesc(InputPesquisa.getText());
+    }//GEN-LAST:event_buttonPesquisaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -272,20 +324,21 @@ public final class TelaCadastrarDespesa extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaCadastrarDespesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaCadastrarProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaCadastrarDespesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaCadastrarProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaCadastrarDespesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaCadastrarProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaCadastrarDespesa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaCadastrarProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TelaCadastrarDespesa().setVisible(true);
+                new TelaCadastrarProduto().setVisible(true);
             }
         });
     }
@@ -295,12 +348,16 @@ public final class TelaCadastrarDespesa extends javax.swing.JFrame {
     private javax.swing.JButton BotaoCadastrar;
     private javax.swing.JButton BotaoExcluir;
     private javax.swing.JTextField InputDescricao;
+    private javax.swing.JTextField InputPesquisa;
     private javax.swing.JTextField InputPreco;
     private javax.swing.JTextField InputQuantidade;
     private javax.swing.JTable TabelaExibir;
+    private javax.swing.JButton buttonPesquisa;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

@@ -116,4 +116,37 @@ public class ProdutoDAO {
             }
         }
         
+        public List<Produto> readforDesc(String desc) throws ClassNotFoundException, SQLException{
+            
+            Connection con = (Connection) ConnectionFactory.getConnection();
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+            
+            
+            List<Produto> produtos = new ArrayList<>();
+            
+            try{
+                stmt = con.prepareStatement("SELECT * FROM produtos WHERE descricao LIKE ?");
+                stmt.setString(1,"%"+desc+"%");
+                rs = stmt.executeQuery();
+                
+                while(rs.next()){
+                    Produto produto = new Produto();
+                    
+                    produto.setId(rs.getInt("id"));
+                    produto.setDescricao(rs.getString("descricao"));
+                    produto.setQuantd(rs.getInt("quantidade"));
+                    produto.setPreco(rs.getDouble("preco"));
+                    
+                    produtos.add(produto);
+                }
+            } catch(SQLException ex) {
+              Logger.getLogger(ProdutoDAO.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "Erro ao consultar: " + ex);
+            } finally{
+                ConnectionFactory.CloseConnection(con, stmt, rs);
+            }
+            return produtos;
+        }
+        
 }
